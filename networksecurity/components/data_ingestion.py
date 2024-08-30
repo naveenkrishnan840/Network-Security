@@ -70,7 +70,9 @@ class DataIngestion:
             )
             
             dir_path = os.path.dirname(self.data_ingestion_config.training_file_path)
-            
+            os.makedirs(dir_path, exist_ok=True)
+
+            dir_path = os.path.dirname(self.data_ingestion_config.testing_file_path)
             os.makedirs(dir_path, exist_ok=True)
             
             logging.info(f"Exporting train and test file path.")
@@ -78,7 +80,7 @@ class DataIngestion:
             train_set.to_csv(
                 self.data_ingestion_config.training_file_path, index=False, header=True
             )
-
+        
             test_set.to_csv(
                 self.data_ingestion_config.testing_file_path, index=False, header=True
             )

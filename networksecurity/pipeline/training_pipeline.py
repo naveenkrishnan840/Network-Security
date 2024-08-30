@@ -34,24 +34,25 @@ from networksecurity.entity.artifact_entity import (
 from networksecurity.cloud.s3_syncer import S3Sync
 from networksecurity.constant.training_pipeline import TRAINING_BUCKET_NAME
 from networksecurity.constant.training_pipeline import SAVED_MODEL_DIR
+
+
 class TrainingPipeline:
-    is_pipeline_running=False
+
     def __init__(self):
-         self.training_pipeline_config = TrainingPipelineConfig()
-         self.s3_sync = S3Sync()
+        self.is_pipeline_running = False
+        self.training_pipeline_config = TrainingPipelineConfig()
+        self.s3_sync = S3Sync()
     
     def start_data_ingestion(self):
         try:
-            self.data_ingestion_config=DataIngestionConfig(training_pipeline_config=self.training_pipeline_config)
+            self.data_ingestion_config = DataIngestionConfig(training_pipeline_config=self.training_pipeline_config)
             logging.info("Starting data ingestion")
             data_ingestion=DataIngestion(data_ingestion_config=self.data_ingestion_config)
             data_ingestion_artifact=data_ingestion.initiate_data_ingestion()
             logging.info(f"Data ingestion completed and artifact: {data_ingestion_artifact}")
             return data_ingestion_artifact
-            
-            
         except Exception as e:
-            raise NetworkSecurityException(e,sys)
+            raise NetworkSecurityException(e, sys)
         
     def start_data_validation(self,data_ingestion_artifact:DataIngestionArtifact):
         try:
@@ -97,7 +98,7 @@ class TrainingPipeline:
             model_evaluation_config:ModelEvaluationConfig=ModelEvaluationConfig(training_pipeline_config=self.training_pipeline_config)
             model_eval=ModelEvaluation(model_evaluation_config,data_validation_artifact,model_trainer_artifact)
             model_eval_artifact=model_eval.initiate_model_evaluation()
-            return  model_eval_artifact
+            return model_eval_artifact
 
         except Exception as e:
             raise NetworkSecurityException(e,sys)
@@ -124,6 +125,7 @@ class TrainingPipeline:
             self.s3_sync.sync_folder_to_s3(folder = SAVED_MODEL_DIR,aws_bucket_url=aws_bucket_url)
         except Exception as e:
             raise NetworkSecurityException(e,sys)  
+        
     def run_pipeline(self):
         try:
             TrainingPipeline.is_pipeline_running=True
