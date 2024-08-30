@@ -7,7 +7,6 @@ from networksecurity.pipeline.training_pipeline import TrainingPipeline
 
 def start_training():
     try:
-        pass
         training_pipeline = TrainingPipeline()
         training_pipeline.run_pipeline()
     except Exception as e:
@@ -16,3 +15,7 @@ def start_training():
 
 if __name__ == "__main__":
     start_training()
+    # try:
+    #     1/0
+    # except Exception as e:
+    #     raise NetworkSecurityException(e, sys)
